@@ -53,9 +53,36 @@
         </small>
       </div>
       <div class="input-field">
-        <input id="name" class="validate" type="text" />
+        <input
+          id="name"
+          v-model.trim="name"
+          :class="{
+            invalid:
+              (v$.name.$dirty && v$.name.required.$invalid) ||
+              (v$.name.$dirty && v$.name.minLength.$invalid),
+          }"
+          type="text"
+        />
         <label for="name">Имя</label>
-        <small class="helper-text invalid">Name</small>
+        <small
+          v-if="v$.name.$dirty && v$.name.required.$invalid"
+          class="helper-text invalid"
+        >
+          {{ v$.name.required.$message }}
+        </small>
+        <small
+          v-else-if="v$.name.$dirty && v$.name.minLength.$invalid"
+          class="helper-text invalid"
+        >
+          {{ v$.name.minLength.$message }} Текущая длина Вашего имени
+          {{ name.length }}...
+        </small>
+        <small
+          v-else-if="v$.name.$dirty && v$.name.alpha.$invalid"
+          class="helper-text invalid"
+        >
+          {{ v$.name.alpha.$message }}
+        </small>
       </div>
       <p>
         <label>
@@ -82,7 +109,13 @@
 
 <script>
 import { useVuelidate } from "@vuelidate/core";
-import { email, helpers, minLength, required } from "@vuelidate/validators";
+import {
+  alpha,
+  email,
+  helpers,
+  minLength,
+  required,
+} from "@vuelidate/validators";
 
 export default {
   setup() {
@@ -131,8 +164,23 @@ export default {
         ),
         minLength: helpers.withMessage(
           ({ $pending, $invalid, $params, $model }) =>
-            `Длина Вашего пароля должны быть не менее, чем ${$params.min} символов.`,
+            `Длина Вашего пароля должна быть не менее, чем ${$params.min} символов.`,
           minLength(12)
+        ),
+      },
+      name: {
+        required: helpers.withMessage(
+          "Поле NAME является обязательным.",
+          required
+        ),
+        minLength: helpers.withMessage(
+          ({ $pending, $invalid, $params, $model }) =>
+            `Длина Вашего имени должна быть не менее, чем ${$params.min} символов.`,
+          minLength(3)
+        ),
+        alpha: helpers.withMessage(
+          "В Вашем имени могут быть только буквы.",
+          alpha
         ),
       },
     };

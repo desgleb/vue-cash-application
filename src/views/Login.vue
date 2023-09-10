@@ -118,7 +118,7 @@ export default {
         ),
         minLength: helpers.withMessage(
           ({ $pending, $invalid, $params, $model }) =>
-            `Длина Вашего пароля должны быть не менее, чем ${$params.min} символов.`,
+            `Длина Вашего пароля должна быть не менее, чем ${$params.min} символов.`,
           minLength(12)
         ),
       },
