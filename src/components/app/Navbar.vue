@@ -5,7 +5,10 @@
         <a href="#" @click.prevent="$emit('burgerClick')">
           <i class="material-icons black-text">dehaze</i>
         </a>
-        <span class="black-text">{{ date }}</span>
+        <!--suppress JSUnresolvedReference -->
+        <span class="black-text">{{
+          $filters.dateFilter(date, "datetime")
+        }}</span>
       </div>
 
       <ul class="right hide-on-small-and-down">
@@ -50,7 +53,6 @@ export default {
   },
   methods: {
     logout() {
-      console.log("Logout");
       // noinspection JSUnresolvedReference
       this.$router.push("/login?message=logout");
     },
@@ -67,7 +69,6 @@ export default {
   beforeUnmount() {
     clearInterval(this.interval);
     if (this.dropdown && this.dropdown.destroy) this.dropdown.destroy;
-    console.log("before unmount");
   },
 };
 </script>
