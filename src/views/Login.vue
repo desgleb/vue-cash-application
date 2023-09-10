@@ -1,16 +1,56 @@
 <template>
-  <form class="card auth-card">
+  <form class="card auth-card" @submit.prevent="submitHandler">
     <div class="card-content">
       <span class="card-title">Домашняя бухгалтерия</span>
       <div class="input-field">
-        <input id="email" type="text" class="validate" />
+        <input
+          id="email"
+          v-model.trim="email"
+          :class="{
+            invalid:
+              (v$.email.$dirty && v$.email.required.$invalid) ||
+              (v$.email.$dirty && v$.email.email.$invalid),
+          }"
+          type="text"
+        />
         <label for="email">Email</label>
-        <small class="helper-text invalid">Email</small>
+        <small
+          v-if="v$.email.$dirty && v$.email.required.$invalid"
+          class="helper-text invalid"
+          >{{ v$.email.required.$message }}
+        </small>
+        <small
+          v-else-if="v$.email.$dirty && v$.email.email.$invalid"
+          class="helper-text invalid"
+          >{{ v$.email.email.$message }}
+        </small>
       </div>
       <div class="input-field">
-        <input id="password" type="password" class="validate" />
+        <input
+          id="password"
+          v-model.trim="password"
+          :class="{
+            invalid:
+              (v$.password.$dirty && v$.password.required.$invalid) ||
+              (v$.password.$dirty && v$.password.minLength.$invalid),
+          }"
+          autocomplete
+          type="password"
+        />
         <label for="password">Пароль</label>
-        <small class="helper-text invalid">Password</small>
+        <small
+          v-if="v$.password.$dirty && v$.password.required.$invalid"
+          class="helper-text invalid"
+        >
+          {{ v$.password.required.$message }}
+        </small>
+        <small
+          v-else-if="v$.password.$dirty && v$.password.minLength.$invalid"
+          class="helper-text invalid"
+        >
+          {{ v$.password.minLength.$message }}. Текущая длина пароля
+          {{ password.length }}...
+        </small>
       </div>
     </div>
     <div class="card-action">
@@ -23,16 +63,68 @@
 
       <p class="center">
         Нет аккаунта?
-        <a href="/">Зарегистрироваться</a>
+        <router-link to="/register">Зарегистрироваться</router-link>
       </p>
     </div>
   </form>
 </template>
 
 <script>
+import { useVuelidate } from "@vuelidate/core";
+import { required, email, minLength, helpers } from "@vuelidate/validators";
+
 export default {
+  setup() {
+    return { v$: useVuelidate() };
+  },
   name: "Login",
+  data() {
+    return {
+      email: "",
+      password: "",
+      vuelidate: this.v$,
+    };
+  },
+  methods: {
+    submitHandler() {
+      if (this.v$.$invalid) {
+        this.v$.$touch();
+        return;
+      }
+      const formData = {
+        email: this.email,
+        password: this.password,
+      };
+
+      console.log(formData);
+      // noinspection JSUnresolvedReference
+      this.$router.push("/");
+    },
+  },
+  validations() {
+    // noinspection JSUnusedLocalSymbols
+    return {
+      email: {
+        required: helpers.withMessage(
+          "Поле EMAIL является обязательным.",
+          required
+        ),
+        email: helpers.withMessage("Это не похоже на EMAIL...", email),
+      },
+      password: {
+        required: helpers.withMessage(
+          "Поле PASSWORD является обязательным.",
+          required
+        ),
+        minLength: helpers.withMessage(
+          ({ $pending, $invalid, $params, $model }) =>
+            `Длина Вашего пароля должны быть не менее, чем ${$params.min} символов.`,
+          minLength(12)
+        ),
+      },
+    };
+  },
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped></style>
