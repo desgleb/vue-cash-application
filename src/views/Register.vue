@@ -86,7 +86,7 @@
       </div>
       <p>
         <label>
-          <input type="checkbox" />
+          <input v-model="agree" type="checkbox" />
           <span>С правилами согласен</span>
         </label>
       </p>
@@ -107,6 +107,7 @@
   </form>
 </template>
 
+<!--suppress JSUnusedGlobalSymbols -->
 <script>
 import { useVuelidate } from "@vuelidate/core";
 import {
@@ -133,6 +134,7 @@ export default {
   },
   methods: {
     submitHandler() {
+      console.log(this.v$);
       if (this.v$.$invalid) {
         this.v$.$touch();
         return;
@@ -140,6 +142,7 @@ export default {
       const formData = {
         email: this.email,
         password: this.password,
+        name: this.name,
       };
 
       console.log(formData);
@@ -179,13 +182,14 @@ export default {
           minLength(3)
         ),
         alpha: helpers.withMessage(
-          "В Вашем имени могут быть только буквы.",
+          "В Вашем имени могут быть только латинские буквы.",
           alpha
         ),
       },
+      agree: { checked: (v) => v },
     };
   },
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped></style>
