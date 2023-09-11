@@ -97,11 +97,11 @@ export default {
         password: this.password,
       };
 
-      await this.$store.dispatch("login", formData);
-
-      console.log(formData);
-      // noinspection JSUnresolvedReference
-      this.$router.push("/");
+      try {
+        await this.$store.dispatch("login", formData);
+        // noinspection JSUnresolvedReference
+        this.$router.push("/");
+      } catch (e) {}
     },
   },
   validations() {

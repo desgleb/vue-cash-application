@@ -1,10 +1,13 @@
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import firebaseConfig from "@/utils/firebase.config";
+
+const auth = getAuth(initializeApp(firebaseConfig));
 
 export default {
   actions: {
     async login({ dispatch, commit }, { email, password }) {
       try {
-        const auth = getAuth();
         await signInWithEmailAndPassword(auth, email, password);
         // .then((userCredential) => {
         //   // Signed in
@@ -15,7 +18,12 @@ export default {
         //   const errorCode = error.code;
         //   const errorMessage = error.message;
         // });
-      } catch (e) {}
+      } catch (e) {
+        throw e;
+      }
+    },
+    async logout() {
+      await signOut(auth);
     },
   },
 };

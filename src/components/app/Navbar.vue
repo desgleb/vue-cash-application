@@ -52,7 +52,8 @@ export default {
     };
   },
   methods: {
-    logout() {
+    async logout() {
+      await this.$store.dispatch("logout");
       // noinspection JSUnresolvedReference
       this.$router.push("/login?message=logout");
     },
