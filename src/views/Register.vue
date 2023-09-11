@@ -77,12 +77,6 @@
           {{ v$.name.minLength.$message }} Текущая длина Вашего имени
           {{ name.length }}...
         </small>
-        <small
-          v-else-if="v$.name.$dirty && v$.name.alpha.$invalid"
-          class="helper-text invalid"
-        >
-          {{ v$.name.alpha.$message }}
-        </small>
       </div>
       <p>
         <label>
@@ -110,13 +104,7 @@
 <!--suppress JSUnusedGlobalSymbols -->
 <script>
 import { useVuelidate } from "@vuelidate/core";
-import {
-  alpha,
-  email,
-  helpers,
-  minLength,
-  required,
-} from "@vuelidate/validators";
+import { email, helpers, minLength, required } from "@vuelidate/validators";
 
 export default {
   setup() {
@@ -133,8 +121,7 @@ export default {
     };
   },
   methods: {
-    submitHandler() {
-      console.log(this.v$);
+    async submitHandler() {
       if (this.v$.$invalid) {
         this.v$.$touch();
         return;
@@ -145,9 +132,11 @@ export default {
         name: this.name,
       };
 
-      console.log(formData);
-      // noinspection JSUnresolvedReference
-      this.$router.push("/");
+      try {
+        await this.$store.dispatch("register", formData);
+        // noinspection JSUnresolvedReference
+        this.$router.push("/");
+      } catch (e) {}
     },
   },
   validations() {
@@ -180,10 +169,6 @@ export default {
           ({ $pending, $invalid, $params, $model }) =>
             `Длина Вашего имени должна быть не менее, чем ${$params.min} символов.`,
           minLength(3)
-        ),
-        alpha: helpers.withMessage(
-          "В Вашем имени могут быть только латинские буквы.",
-          alpha
         ),
       },
       agree: { checked: (v) => v },

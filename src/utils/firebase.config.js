@@ -6,4 +6,6 @@ export default {
   messagingSenderId: "753835405866",
   appId: "1:753835405866:web:f4bd0b218bd6e890adc953",
   measurementId: "G-WTBVVJ2V93",
+  databaseURL:
+    "https://vue-cash-default-rtdb.europe-west1.firebasedatabase.app/",
 };

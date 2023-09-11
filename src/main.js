@@ -10,12 +10,10 @@ import "materialize-css/dist/js/materialize.min";
 
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-// import { getDatabase } from "firebase/database";
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
-// const firebaseDB = getDatabase(firebaseApp);
 
 let APP;
 firebaseAuth.onAuthStateChanged(() => {
