@@ -7,10 +7,32 @@ import messagePlugin from "@/utils/message.plugin";
 import "./registerServiceWorker";
 import "materialize-css/dist/js/materialize.min";
 
-const APP = createApp(App);
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 
-APP.config.globalProperties.$filters = { dateFilter };
+// Config Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCg7OyDQ10YsjTsrQB7y75QEsRgj6Lbv30",
+  authDomain: "vue-cash.firebaseapp.com",
+  projectId: "vue-cash",
+  storageBucket: "vue-cash.appspot.com",
+  messagingSenderId: "753835405866",
+  appId: "1:753835405866:web:f4bd0b218bd6e890adc953",
+  measurementId: "G-WTBVVJ2V93",
+};
 
-APP.use(messagePlugin);
+// Initialize Firebase
+const firebaseApp = initializeApp(firebaseConfig);
+const firebaseAuth = getAuth(firebaseApp);
+const firebaseDB = getDatabase(firebaseApp);
 
-APP.use(store).use(router).mount("#app");
+let APP;
+firebaseAuth.onAuthStateChanged(() => {
+  if (!APP) {
+    APP = createApp(App);
+    APP.config.globalProperties.$filters = { dateFilter };
+    APP.use(messagePlugin);
+    APP.use(store).use(router).mount("#app");
+  }
+});
