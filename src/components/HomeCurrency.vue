@@ -15,10 +15,11 @@
           </thead>
 
           <tbody>
-            <tr>
-              <td>руб</td>
-              <td>12121</td>
-              <td>12.12.12</td>
+            <tr v-for="cur in currencies" :key="cur">
+              <td>{{ cur }}</td>
+              <td>{{ rates[cur].toFixed(5) }}</td>
+              <!--suppress JSUnresolvedReference -->
+              <td>{{ $filters.dateFilter(date, "date") }}</td>
             </tr>
           </tbody>
         </table>
@@ -29,6 +30,12 @@
 <script>
 export default {
   name: "HomeCurrency",
+  props: ["rates", "date"],
+  data() {
+    return {
+      currencies: ["RUB", "USD", "EUR"],
+    };
+  },
 };
 </script>
 <style lang="scss" scoped></style>
