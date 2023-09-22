@@ -5,10 +5,16 @@
     </div>
     <section>
       <Loader v-if="loading" />
-      <div class="row" v-else>
+      <div v-else class="row">
         <AddCategory @created="addNewCategory" />
 
-        <EditCategory />
+        <EditCategory
+          v-if="categories.length"
+          :key="categories.length + updateCount"
+          :categories="categories"
+          @updated="updateCategories"
+        />
+        <p v-else class="center">Создайте хотя бы одну категорию</p>
       </div>
     </section>
   </div>
@@ -30,12 +36,19 @@ export default {
     return {
       categories: [],
       loading: true,
+      updateCount: 0,
     };
   },
   methods: {
     addNewCategory(category) {
+      console.log(category);
       this.categories.push(category);
-      console.log(this.categories);
+    },
+    updateCategories(category) {
+      const idx = this.categories.findIndex((c) => c.id === category.id);
+      this.categories[idx].title = category.title;
+      this.categories[idx].limit = category.limit;
+      this.updateCount++;
     },
   },
   async mounted() {
@@ -45,4 +58,12 @@ export default {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped>
+p {
+  &.center {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+}
+</style>

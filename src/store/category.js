@@ -1,5 +1,13 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, child, push, onValue } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  child,
+  push,
+  update,
+} from "firebase/database";
 import firebaseConfig from "@/utils/firebase.config";
 
 const db = getDatabase(initializeApp(firebaseConfig));
@@ -9,11 +17,40 @@ export default {
     async fetchCategories({ commit, dispatch }) {
       try {
         const uid = await dispatch("getUid");
-        const categoriesInfoRef = ref(db, `/users/${uid}/categories`);
-        onValue(categoriesInfoRef, (snapshot) => {
-          const info = snapshot.val();
-          console.log(info);
-          // commit("setInfo", info);
+        const categories = await (
+          await get(ref(db, `/users/${uid}/categories`))
+        ).val();
+
+        console.log(categories);
+
+        return categories
+          ? Object.keys(categories)
+              .map((key) => ({
+                ...categories[key],
+                id: key,
+              }))
+              .sort((a, b) => {
+                if (a.title > b.title) {
+                  return 1;
+                }
+                if (a.title < b.title) {
+                  return -1;
+                }
+                return 0;
+              })
+          : [];
+      } catch (e) {
+        console.log(e);
+        commit("setError", e);
+        throw e;
+      }
+    },
+    async updateCategory({ commit, dispatch }, { title, limit, id }) {
+      try {
+        const uid = await dispatch("getUid");
+        return update(ref(db, `/users/${uid}/categories/${id}`), {
+          title,
+          limit,
         });
       } catch (e) {
         console.log(e);
@@ -24,13 +61,13 @@ export default {
     async addCategory({ commit, dispatch }, { title, limit }) {
       try {
         const uid = await dispatch("getUid");
-        await set(ref(db, `/users/${uid}/categories/${title}/`), {
+        const categoryKey = push(
+          child(ref(db), `/users/${uid}/categories/`)
+        ).key;
+        await set(ref(db, `/users/${uid}/categories/${categoryKey}/`), {
           title,
           limit,
         });
-        const categoryKey = push(
-          child(ref(db), `/users/${uid}/categories/${title}/`)
-        ).key;
         // noinspection JSUnresolvedReference
         return {
           title,
