@@ -4,24 +4,46 @@
       <h3>Новая запись</h3>
     </div>
 
-    <form class="form">
+    <Loader v-if="loading" />
+
+    <p v-else-if="!categories.length" class="center">
+      <router-link to="/categories">
+        Добавьте хотя бы одну категорию
+      </router-link>
+    </p>
+
+    <form v-else class="form">
       <div class="input-field">
-        <select>
-          <option>name cat</option>
+        <select ref="select" v-model="category">
+          <option v-for="c in categories" :key="c.id" :value="c.id">
+            {{ c.title }}
+          </option>
         </select>
         <label>Выберите категорию</label>
       </div>
 
       <p>
         <label>
-          <input class="with-gap" name="type" type="radio" value="income" />
+          <input
+            class="with-gap"
+            name="type"
+            type="radio"
+            value="income"
+            v-model="type"
+          />
           <span>Доход</span>
         </label>
       </p>
 
       <p>
         <label>
-          <input class="with-gap" name="type" type="radio" value="outcome" />
+          <input
+            class="with-gap"
+            name="type"
+            type="radio"
+            value="outcome"
+            v-model="type"
+          />
           <span>Расход</span>
         </label>
       </p>
@@ -47,9 +69,40 @@
 </template>
 
 <script>
+import Loader from "@/components/app/Loader.vue";
+
 export default {
   name: "Record",
+  components: { Loader },
+  data() {
+    return {
+      loading: true,
+      categories: [],
+      select: null,
+      category: null,
+      type: "outcome",
+    };
+  },
+  async mounted() {
+    this.categories = await this.$store.dispatch("fetchCategories");
+    this.loading = false;
+
+    if (this.categories) {
+      this.category = this.categories[0].id;
+    }
+
+    setTimeout(() => {
+      // noinspection JSCheckFunctionSignatures
+      this.select = M.FormSelect.init(this.$refs.select);
+      M.updateTextFields();
+    }, 0);
+  },
+  beforeUnmount() {
+    if (this.select && this.select.destroy) {
+      this.select.destroy();
+    }
+  },
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped></style>

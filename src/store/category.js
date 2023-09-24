@@ -21,8 +21,6 @@ export default {
           await get(ref(db, `/users/${uid}/categories`))
         ).val();
 
-        console.log(categories);
-
         return categories
           ? Object.keys(categories)
               .map((key) => ({
