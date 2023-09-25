@@ -39,7 +39,6 @@
 import { mapGetters } from "vuex";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
-import { handleError } from "vue";
 
 export default {
   setup() {
