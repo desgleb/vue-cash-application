@@ -8,6 +8,7 @@ import currencyFilter from "@/filters/currency.filter";
 import tooltipDirective from "@/directives/tooltip.directive";
 import messagePlugin from "@/utils/message.plugin";
 import Loader from "@/components/app/Loader.vue";
+import Paginate from "vuejs-paginate-next";
 import "./registerServiceWorker";
 import "materialize-css/dist/js/materialize.min";
 
@@ -26,6 +27,7 @@ firebaseAuth.onAuthStateChanged(() => {
     APP.directive("tooltip", tooltipDirective);
     APP.config.globalProperties.$filters = { dateFilter, currencyFilter };
     APP.component("Loader", Loader);
+    APP.component("Paginate", Paginate);
     APP.use(messagePlugin).use(store).use(router).mount("#app");
   }
 });

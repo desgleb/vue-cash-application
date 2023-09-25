@@ -40,6 +40,23 @@ export default {
         throw e;
       }
     },
+    async fetchCategoryById({ commit, dispatch }, id) {
+      try {
+        const uid = await dispatch("getUid");
+        const dbRef = ref(db);
+        // noinspection JSUnresolvedReference
+        const category =
+          (await (
+            await get(child(dbRef, `/users/${uid}/categories/${id}`))
+          ).val()) || {};
+
+        return { ...category, id };
+      } catch (e) {
+        console.log(e);
+        commit("setError", e);
+        throw e;
+      }
+    },
     async updateCategory({ commit, dispatch }, { title, limit, id }) {
       try {
         const uid = await dispatch("getUid");

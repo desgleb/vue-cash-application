@@ -31,5 +31,21 @@ export default {
         throw e;
       }
     },
+    async fetchRecordById({ dispatch, commit }, id) {
+      try {
+        const uid = await dispatch("getUid");
+        const dbRef = ref(db);
+        // noinspection JSUnresolvedReference
+        const record =
+          (await (
+            await get(child(dbRef, `/users/${uid}/records/${id}`))
+          ).val()) || {};
+
+        return { ...record, id };
+      } catch (e) {
+        commit("setError", e);
+        throw e;
+      }
+    },
   },
 };

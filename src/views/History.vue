@@ -14,6 +14,15 @@
 
     <section v-else>
       <HistoryTable :records="records" />
+
+      <Paginate
+        :page-count="20"
+        :click-handler="pageChangeHandler"
+        :prev-text="'Назад'"
+        :next-text="'Вперед'"
+        :container-class="'pagination'"
+        :page-class="'waves-effect'"
+      ></Paginate>
     </section>
   </div>
 </template>
@@ -21,15 +30,21 @@
 <script>
 import HistoryTable from "@/components/HistoryTable.vue";
 import Loader from "@/components/app/Loader.vue";
+import Paginate from "vuejs-paginate-next";
 
 export default {
   name: "History",
-  components: { Loader, HistoryTable },
+  components: { Loader, HistoryTable, Paginate },
   data: () => ({
     loading: true,
     records: [],
     categories: [],
   }),
+  methods: {
+    pageChangeHandler() {
+      console.log("paginate");
+    },
+  },
   async mounted() {
     const records = await this.$store.dispatch("fetchRecords");
     this.categories = await this.$store.dispatch("fetchCategories");
