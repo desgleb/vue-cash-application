@@ -5,6 +5,7 @@ import router from "./router";
 import store from "./store";
 import dateFilter from "@/filters/date.filter";
 import currencyFilter from "@/filters/currency.filter";
+import tooltipDirective from "@/directives/tooltip.directive";
 import messagePlugin from "@/utils/message.plugin";
 import Loader from "@/components/app/Loader.vue";
 import "./registerServiceWorker";
@@ -21,6 +22,8 @@ let APP;
 firebaseAuth.onAuthStateChanged(() => {
   if (!APP) {
     APP = createApp(App);
+    // noinspection JSCheckFunctionSignatures
+    APP.directive("tooltip", tooltipDirective);
     APP.config.globalProperties.$filters = { dateFilter, currencyFilter };
     APP.component("Loader", Loader);
     APP.use(messagePlugin).use(store).use(router).mount("#app");

@@ -17,26 +17,23 @@ export default {
     async fetchCategories({ commit, dispatch }) {
       try {
         const uid = await dispatch("getUid");
-        const categories = await (
-          await get(ref(db, `/users/${uid}/categories`))
-        ).val();
+        const categories =
+          (await (await get(ref(db, `/users/${uid}/categories`))).val()) || {};
 
-        return categories
-          ? Object.keys(categories)
-              .map((key) => ({
-                ...categories[key],
-                id: key,
-              }))
-              .sort((a, b) => {
-                if (a.title > b.title) {
-                  return 1;
-                }
-                if (a.title < b.title) {
-                  return -1;
-                }
-                return 0;
-              })
-          : [];
+        return Object.keys(categories)
+          .map((key) => ({
+            ...categories[key],
+            id: key,
+          }))
+          .sort((a, b) => {
+            if (a.title > b.title) {
+              return 1;
+            }
+            if (a.title < b.title) {
+              return -1;
+            }
+            return 0;
+          });
       } catch (e) {
         console.log(e);
         commit("setError", e);
