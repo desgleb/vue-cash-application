@@ -5,7 +5,7 @@
     </div>
 
     <div class="history-chart">
-      <canvas></canvas>
+      <PieChart />
     </div>
 
     <Loader v-if="loading" />
@@ -32,12 +32,13 @@
 <script>
 import HistoryTable from "@/components/HistoryTable.vue";
 import Loader from "@/components/app/Loader.vue";
+import PieChart from "@/components/PieChart.vue";
 import Paginate from "vuejs-paginate-next";
 import _ from "lodash";
 
 export default {
   name: "History",
-  components: { Loader, HistoryTable, Paginate },
+  components: { Loader, HistoryTable, Paginate, PieChart },
   data: () => ({
     loading: true,
     records: [],
@@ -58,26 +59,30 @@ export default {
       this.pageCount = _.size(this.allItems);
       this.items = this.allItems[this.page - 1] || this.allItems[0];
     },
+    async setup() {
+      const categories = await this.$store.dispatch("fetchCategories");
+      this.setupPagination(
+        this.records.map((record) => {
+          return {
+            ...record,
+            categoryName: categories.find((c) => c.id === record.categoryId)
+              .title,
+            typeClass: record.type === "income" ? "green" : "red",
+            typeText: record.type === "income" ? "Доход" : "Расход",
+          };
+        })
+      );
+    },
   },
   async mounted() {
     this.page = +this.$route.query.page || 1;
     this.records = await this.$store.dispatch("fetchRecords");
-    const categories = await this.$store.dispatch("fetchCategories");
-    this.setupPagination(
-      this.records.map((record) => {
-        return {
-          ...record,
-          categoryName: categories.find((c) => c.id === record.categoryId)
-            .title,
-          typeClass: record.type === "income" ? "green" : "red",
-          typeText: record.type === "income" ? "Доход" : "Расход",
-        };
-      })
-    );
+
+    await this.setup();
 
     this.loading = false;
   },
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped></style>
