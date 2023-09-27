@@ -17,30 +17,31 @@ export default {
   name: "Sidebar",
   props: ["modelValue"],
   data() {
+    // noinspection JSUnresolvedReference
     return {
       links: [
         {
-          title: "Счет",
+          title: this.$filters.localizeFilter("Sidebar_Bill"),
           url: "/",
           isActive: true,
         },
         {
-          title: "История",
+          title: this.$filters.localizeFilter("Sidebar_History"),
           url: "/history",
           isActive: false,
         },
         {
-          title: "Планирование",
+          title: this.$filters.localizeFilter("Sidebar_Planning"),
           url: "/planning",
           isActive: false,
         },
         {
-          title: "Новая запись",
+          title: this.$filters.localizeFilter("Sidebar_Record"),
           url: "/record",
           isActive: false,
         },
         {
-          title: "Категории",
+          title: this.$filters.localizeFilter("Sidebar_Categories"),
           url: "/categories",
           isActive: false,
         },

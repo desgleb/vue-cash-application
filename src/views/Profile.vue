@@ -13,9 +13,13 @@
           type="text"
           :class="{ invalid: v$.name.$dirty && nameRequired }"
         />
-        <label for="description">Имя</label>
+        <!--suppress JSUnresolvedReference -->
+        <label for="description">{{
+          $filters.localizeFilter("ProfileName")
+        }}</label>
+        <!--suppress JSUnresolvedReference -->
         <span class="helper-text invalid" v-if="v$.name.$dirty && nameRequired">
-          Укажите Ваше имя
+          {{ $filters.localizeFilter("ProfileNameError") }}
         </span>
       </div>
 
@@ -28,8 +32,9 @@
         </label>
       </div>
 
+      <!--suppress JSUnresolvedReference -->
       <button class="btn waves-effect waves-light" type="submit">
-        Обновить
+        {{ $filters.localizeFilter("ProfileSubmit") }}
         <i class="material-icons right">send</i>
       </button>
     </form>

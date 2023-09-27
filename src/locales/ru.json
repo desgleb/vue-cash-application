@@ -1,2 +1,11 @@
 {
+  "ProfileTitle": "Профиль",
+  "ProfileName": "Имя",
+  "ProfileNameError": "Введите Ваше имя",
+  "ProfileSubmit": "Обновить",
+  "Sidebar_Bill": "Счет",
+  "Sidebar_History": "История",
+  "Sidebar_Planning": "Планирование",
+  "Sidebar_Record": "Новая запись",
+  "Sidebar_Categories": "Категории"
 }

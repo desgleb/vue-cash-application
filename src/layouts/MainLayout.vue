@@ -2,7 +2,7 @@
   <div class="app-main-layout">
     <Navbar @burgerClick="isOpen = !isOpen" />
 
-    <Sidebar v-model="isOpen" />
+    <Sidebar v-model="isOpen" :key="locale" />
 
     <main class="app-content" :class="{ full: !isOpen }">
       <div class="app-page">
@@ -39,6 +39,9 @@ export default {
   computed: {
     error() {
       return this.$store.getters.getError;
+    },
+    locale() {
+      return this.$store.getters.info.locale;
     },
   },
   watch: {
