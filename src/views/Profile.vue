@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="page-title">
-      <h3>Профиль</h3>
+      <!--suppress JSUnresolvedReference -->
+      <h3>{{ $filters.localizeFilter("ProfileTitle") }}</h3>
     </div>
 
     <form class="form" @submit.prevent="handleSubmit">
@@ -21,7 +22,7 @@
       <div class="switch">
         <label>
           English
-          <input type="checkbox" />
+          <input type="checkbox" v-model="isRuLocale" />
           <span class="lever"></span>
           Русский
         </label>
@@ -36,7 +37,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 
@@ -48,6 +49,7 @@ export default {
   data() {
     return {
       name: "",
+      isRuLocale: true,
     };
   },
   computed: {
@@ -57,12 +59,17 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["updateInfo"]),
     async handleSubmit() {
       if (this.v$.$invalid) {
         this.v$.$touch();
         return;
       }
       try {
+        await this.updateInfo({
+          name: this.name,
+          locale: this.isRuLocale ? "ru-RU" : "en-US",
+        });
       } catch (e) {}
     },
   },
@@ -73,6 +80,7 @@ export default {
   },
   mounted() {
     this.name = this.info.name;
+    this.isRuLocale = this.info.locale === "ru-RU";
     setTimeout(() => {
       M.updateTextFields();
     }, 0);
